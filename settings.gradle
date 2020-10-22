@@ -1,0 +1,3 @@
+include ':rtspserver'
+include ':app'
+rootProject.name = "SurvivorBuddy4Mobile"

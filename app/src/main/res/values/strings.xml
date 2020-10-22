@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SurvivorBuddy4Mobile</string>
+    <string name="start_button">start_stream</string>
+    <string name="start_stream_button">Start AV Stream</string>
+    <string name="stop_stream_button">Stop AV Stream</string>
+    <string name="default_textview_url">Server Not Started</string>
+    <string name="message_activity_button">Show Messages</string>
+    <string name="message_textview_default"></string>
+</resources>
