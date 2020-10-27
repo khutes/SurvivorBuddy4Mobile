@@ -14,19 +14,24 @@ import java.nio.charset.StandardCharsets;
 
 public class MessageServer {
 
-    private String TAG = "MessageServer";
+    private String TAG = "[SB4] MessageServer";
 
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private int portNum;
     private DataInputStream fromClient;
+    private Boolean connectionGood;
+    private String disconnectMessage;
+    private Boolean restartServer;
 
     private MessageActivity messageActivity;
 
 
-    public MessageServer(int portNum, MessageActivity activity) {
+    public MessageServer(int portNum, MessageActivity activity, String dc_message, Boolean restart_bool) {
         this.portNum = portNum;
         this.messageActivity = activity;
+        this.disconnectMessage = dc_message;
+        this.restartServer = restart_bool;
 
     }
 
@@ -37,43 +42,48 @@ public class MessageServer {
         Log.i(TAG, Utils.getIPAddress(true));
 
         try {
-            //connection setup
-            serverSocket = new ServerSocket(portNum);
-            clientSocket = serverSocket.accept();
-            Log.i(TAG, "Connection accepted");
-            fromClient = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
+            do {
+                //connection setup
+                Log.i(TAG, "serverSocket assign");
+                serverSocket = new ServerSocket(portNum);
+                Log.i(TAG, "accept()");
+                clientSocket = serverSocket.accept();
+                Log.i(TAG, "accept() done");
+                connectionGood = true;
+                Log.i(TAG, "Connection accepted");
+                fromClient = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
 
+                String inputLine = "";
+                Log.i(TAG, "Waiting");
+                while (connectionGood) {
+                    byte[] bs = new byte[2048];
 
-            String inputLine = "";
-            Log.i(TAG, "Waiting");
-            while(true) {
-                byte[] bs = new byte[2048];
+                    int len_msg = fromClient.read(bs);
+                    //checks for unexpected disconnect
+                    if (len_msg == -1) {
+                        connectionGood = false;
+                        continue;
+                    }
 
-                fromClient.read(bs);
-                inputLine = new String(bs, StandardCharsets.UTF_8).trim();
+                    inputLine = new String(bs, StandardCharsets.UTF_8).trim();
 
-                Log.i(TAG, "'" + inputLine + "'");
-                updateMessageDisplay(inputLine);
+                    if (inputLine.equals(disconnectMessage)) {
+                        connectionGood = false;
+                        continue;
+                    }
 
-                if("STOP".equals(inputLine)) {
-                    break;
+                    Log.i(TAG, "read return value: " + len_msg);
+                    Log.i(TAG, "message_content: <" + inputLine + ">");
+
+                    messageActivity.setMessageTextViewContent(inputLine);
+
                 }
-
-            }
-            Log.i(TAG, "server loop done");
+                Log.i(TAG, "server loop done");
+                serverSocket.close();
+            } while(restartServer);
         } catch(IOException e) {
             Log.e(TAG, "EXCEPTION", e );
         }
     }
-
-    private void updateMessageDisplay(String messageText) {
-        Log.i(TAG, "updateMessageDisplay");
-        messageActivity.setMD(messageText);
-    }
-
-
-
-
-
 
 }

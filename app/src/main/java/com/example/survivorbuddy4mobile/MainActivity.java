@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity{
     private RtspService mServer = null;
     private Boolean boundedRtspService = false;
 
-    private String TAG = "MAIN_ACTIVITY";
+    private String TAG = "[SB4] MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +57,17 @@ public class MainActivity extends AppCompatActivity{
         if(!hasPermissions()) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, 1);
         }
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
         Log.i(TAG, "onStart");
-        safeRtspServiceBind();
+        if(isServiceRunning(RtspService.class)) {
+            safeRtspServiceBind();
+        }
+
     }
 
     @Override
@@ -80,16 +86,18 @@ public class MainActivity extends AppCompatActivity{
 
     public void startStopRtsp(View view) {
         //check if RtspServer is runnning
+        Log.i(TAG, "startStopRtsp");
         if(isServiceRunning(RtspService.class)) {
-            stopService(new Intent(getApplicationContext(), RtspService.class));
             safeRtspServiceUnbind();
+            stopServiceThread();
+            //stopService(new Intent(getApplicationContext(), RtspService.class));
             url_textview.setText(R.string.default_textview_url);
             server_button.setText(R.string.start_stream_button);
 
         } else {
-            startService(new Intent(getApplicationContext(), RtspService.class));
             safeRtspServiceBind();
-
+            Log.i(TAG, "startStopRtsp: good bind");
+            startServiceThread();
             server_button.setText(R.string.stop_stream_button);
         }
     }
@@ -124,6 +132,7 @@ public class MainActivity extends AppCompatActivity{
             boundedRtspService = true;
             //displays the stream endpoint url
             url_textview.setText(mServer.get_endpoint());
+            Log.i(TAG, "END onServiceConnected");
         }
 
         //Should never be called
@@ -135,30 +144,67 @@ public class MainActivity extends AppCompatActivity{
     };
 
     private void safeRtspServiceBind() {
+        Log.i(TAG, "safeRtspServiceBind");
+        /*
         if(isServiceRunning(RtspService.class)) {
-            if(!boundedRtspService) {
-                Intent intent = new Intent(this, RtspService.class);
-                bindService(intent, mRtspServiceConnection, BIND_AUTO_CREATE);
+            Log.i(TAG, "safeRtspServiceBind: service running");
 
-            }
+        */
+        if(!boundedRtspService) {
+            Log.i(TAG, "safeRtspServiceBind: binding");
+            Intent intent = new Intent(MainActivity.this, RtspService.class);
+            bindService(intent, mRtspServiceConnection, BIND_AUTO_CREATE);
+
         }
+        else { Log.i(TAG, "safeRtspServiceBind: service NOT running"); }
     }
 
     private void safeRtspServiceUnbind() {
+        Log.i(TAG, "safeRtspServiceUnbind");
         if(isServiceRunning(RtspService.class)) {
             if(boundedRtspService) {
+                Log.i(TAG, "safeRtspServiceBind: unbinding");
                 unbindService(mRtspServiceConnection);
                 boundedRtspService = false;
             }
         }
     }
 
+    private void startServiceThread() {
+
+        startService(new Intent(getApplicationContext(), RtspService.class));
+        /*
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                startService(new Intent(getApplicationContext(), RtspService.class));
+            }
+        }).start();
+        */
+    }
+
+    private void stopServiceThread() {
+
+        stopService(new Intent(getApplicationContext(), RtspService.class));
+        /*
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                stopService(new Intent(getApplicationContext(), RtspService.class));
+            }
+        }).start();
+        */
+    }
+
+
     //--------------------------------------------------------------------
     //Message activity functions on main
 
     public void startMessageActivity(View view) {
+        Log.i(TAG, "startMessageActivity");
         startActivity(new Intent(this, MessageActivity.class));
     }
+
 
 
 

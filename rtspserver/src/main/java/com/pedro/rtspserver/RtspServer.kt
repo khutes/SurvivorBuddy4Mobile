@@ -41,9 +41,11 @@ class RtspServer(context: Context, private val connectCheckerRtsp: ConnectChecke
       while (!Thread.interrupted()) {
         Log.i(TAG, "Server started $serverIp:$port")
         try {
+          Log.i(TAG, "client accept");
           val client =
             Client(server!!.accept(), serverIp, port, connectCheckerRtsp, sps!!, pps!!, vps, sampleRate,
               isStereo)
+          Log.i(TAG, "after client accept");
           client.start()
           clients.add(client)
         } catch (e: SocketException) {

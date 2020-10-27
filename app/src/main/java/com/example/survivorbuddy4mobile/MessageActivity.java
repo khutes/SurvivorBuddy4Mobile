@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 public class MessageActivity extends AppCompatActivity {
 
-    private String TAG = "MessageActivity";
+    private String TAG = "[SB4] MessageActivity";
     public TextView message_display;
     private MessageServer mMessageServer;
 
@@ -25,7 +25,8 @@ public class MessageActivity extends AppCompatActivity {
         super.onStart();
         Log.i(TAG, "onStart");
 
-        mMessageServer = new MessageServer(5050, this);
+        String dc_message = this.getString(R.string.message_server_client_disconnect_message);
+        mMessageServer = new MessageServer(5050, this, dc_message, true);
 
         new Thread(new Runnable() {
             @Override
@@ -33,13 +34,18 @@ public class MessageActivity extends AppCompatActivity {
                 mMessageServer.startServer();
             }
         }).start();
-
-
     }
 
-    public void setMD(String mt) {
-        Log.i(TAG, "setMD");
-        message_display.setText(mt);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop");
+    }
+
+    public void setMessageTextViewContent(String text_content) {
+        Log.i(TAG, "setMessageTextViewContent");
+        message_display.setText(text_content);
+
     }
 
 
