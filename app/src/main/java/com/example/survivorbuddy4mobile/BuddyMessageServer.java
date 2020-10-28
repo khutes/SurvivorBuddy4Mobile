@@ -55,11 +55,16 @@ public class BuddyMessageServer {
             @Override
             public void run() {
                 try {
-                    dataToClientStream.write(disconnectMsg.getBytes(StandardCharsets.UTF_8));
-                    dataToClientStream.flush();
-                    dataToClientStream.close();
+                    //if no client connects before shutdown some objects will be null
+                    if(dataToClientStream != null) {
+                        dataToClientStream.write(disconnectMsg.getBytes(StandardCharsets.UTF_8));
+                        dataToClientStream.flush();
+                        dataToClientStream.close();
+                    }
                     toServicePipe.close();
-                    clientSocket.close();
+                    if(clientSocket != null) {
+                        clientSocket.close();
+                    }
                     serverReceiveSocket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
