@@ -2,38 +2,48 @@ package com.example.survivorbuddy4mobile;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
+
+import java.io.IOException;
 
 public class MessageActivity extends AppCompatActivity {
 
     private String TAG = "[SB4] MessageActivity";
-    public TextView message_display;
-    private MessageServer mMessageServer;
+    public TextView messageDisplay;
+    private BuddyMessageService mBuddyMessageService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+        messageDisplay = (TextView) findViewById(R.id.messages_textview);
 
-        message_display = (TextView) findViewById(R.id.messages_textview);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(TAG, "onStart");
+    }
 
-        String dc_message = this.getString(R.string.message_server_client_disconnect_message);
-        mMessageServer = new MessageServer(5050, this, dc_message, true);
+    @Override
+    protected void onResume() {
+        Log.i(TAG, "onResume");
+        super.onResume();
+        Intent intent = new Intent(MessageActivity.this, BuddyMessageService.class);
+        bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mMessageServer.startServer();
-            }
-        }).start();
+        registerReceiver(mBroadcastReceiver, new IntentFilter(
+                BuddyMessageService.BROADCAST_ACTION
+        ));
     }
 
     @Override
@@ -42,11 +52,43 @@ public class MessageActivity extends AppCompatActivity {
         Log.i(TAG, "onStop");
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
     public void setMessageTextViewContent(String text_content) {
         Log.i(TAG, "setMessageTextViewContent");
-        message_display.setText(text_content);
+        messageDisplay.setText(text_content);
 
     }
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i(TAG, "BINDED");
+            BuddyMessageService.LocalBinder mLocalBinder = (BuddyMessageService.LocalBinder)service;
+            mBuddyMessageService = mLocalBinder.getBuddyMessageServiceInstance();
+            mBuddyMessageService.setupBuddyMessageService(5050, "_DISC");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setMessageTextViewContent(intent.getStringExtra("displayText"));
+        }
+    };
+
+
+
+
 
 
 }

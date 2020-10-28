@@ -19,7 +19,7 @@
         android:theme="@style/Theme.SurvivorBuddy4Mobile"
         android:usesCleartextTraffic="true">
         <service
-            android:name=".MessageServerService"
+            android:name=".BuddyMessageService"
             android:enabled="true"
             android:exported="true"></service>
 
