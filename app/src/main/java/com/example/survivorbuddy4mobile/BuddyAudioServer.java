@@ -9,6 +9,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 
 public class BuddyAudioServer {
@@ -26,6 +27,7 @@ public class BuddyAudioServer {
     private boolean continueReading;
     private int chunkSize;
     public volatile boolean pipeSet;
+    public volatile boolean stopCalled;
 
 
 
@@ -34,6 +36,7 @@ public class BuddyAudioServer {
         this.portNum = portNum;
         this.writePipe = new PipedOutputStream();
         this.pipeSet = false;
+        this.stopCalled = false;
     }
 
     public PipedInputStream getPipe() {
@@ -42,6 +45,7 @@ public class BuddyAudioServer {
 
 
     public void startServer() throws IOException {
+        stopCalled = false;
         Log.i(TAG, "startServer");
 
         serverReceiveSocket = new ServerSocket(this.portNum);
@@ -76,8 +80,14 @@ public class BuddyAudioServer {
 
         while(continueReading) {
 
+            int readReturn = 0;
             byte[] incomingBytes = new byte[chunkSize];
-            int readReturn = dataFromClientStream.read(incomingBytes);
+            try {
+                readReturn = dataFromClientStream.read(incomingBytes);
+            } catch(SocketException e) {
+                dataFromClientStream.close();
+                break;
+            }
 
             if(readReturn == -1) {
                 dataFromClientStream.close();
@@ -94,6 +104,7 @@ public class BuddyAudioServer {
     public void stopServer() {
 
         continueReading = false;
+        stopCalled = true;
         new Thread(new Runnable() {
             @Override
             public void run() {

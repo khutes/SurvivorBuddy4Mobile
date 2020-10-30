@@ -69,10 +69,11 @@ public class BuddyAudioService extends Service {
             public void run() {
                 try {
                     mBuddyAudioServer.startServer();
-                    Log.i(TAG, "severThreadEnd");
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                Log.i(TAG, "serverThreadEnd");
             }
         });
 
@@ -81,9 +82,11 @@ public class BuddyAudioService extends Service {
             public void run() {
                 try {
                     playAudioStream();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                Log.i(TAG, "audioThread end");
             }
         });
         serverThread.start();
@@ -95,6 +98,7 @@ public class BuddyAudioService extends Service {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        Log.i(TAG, "END all threads");
     }
 
     public void autoRunThreads() {
@@ -104,6 +108,7 @@ public class BuddyAudioService extends Service {
                 while(restartServerBool) {
                     runServiceThreads();
                 }
+                Log.i(TAG, "autoRun END");
             }
         }).start();
 
@@ -127,7 +132,7 @@ public class BuddyAudioService extends Service {
         Log.i(TAG, String.valueOf(mAudioTrack.getState()));
         mAudioTrack.play();
 
-        while(!mBuddyAudioServer.pipeSet) {
+        while(!mBuddyAudioServer.pipeSet && !mBuddyAudioServer.stopCalled) {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
@@ -151,7 +156,7 @@ public class BuddyAudioService extends Service {
         }
         mAudioTrack.stop();
         mAudioTrack.release();
-        Log.i(TAG, "audioThread end");
+
 
     }
 
