@@ -95,8 +95,6 @@ public class BuddyAudioService extends Service {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void autoRunThreads() {

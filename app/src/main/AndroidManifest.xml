@@ -23,7 +23,9 @@
             android:enabled="true"
             android:exported="true"></service>
 
-        <activity android:name=".BuddyAudioActivity" />
+        <activity
+            android:name=".BuddyAudioActivity"
+            android:parentActivityName=".MainActivity"/>
 
         <service
             android:name=".BuddyMessageService"
