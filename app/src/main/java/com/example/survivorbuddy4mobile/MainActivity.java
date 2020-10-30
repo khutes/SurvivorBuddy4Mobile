@@ -205,6 +205,11 @@ public class MainActivity extends AppCompatActivity{
         startActivity(new Intent(this, MessageActivity.class));
     }
 
+    public void startAudioActivity(View view) {
+        Log.i(TAG, "startBuddyAudioActivity");
+        startActivity(new Intent(this, BuddyAudioActivity.class));
+    }
+
 
 
 

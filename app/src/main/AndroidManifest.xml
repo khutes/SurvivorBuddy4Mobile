@@ -19,9 +19,16 @@
         android:theme="@style/Theme.SurvivorBuddy4Mobile"
         android:usesCleartextTraffic="true">
         <service
-            android:name=".BuddyMessageService"
+            android:name=".BuddyAudioService"
             android:enabled="true"
             android:exported="true"></service>
+
+        <activity android:name=".BuddyAudioActivity" />
+
+        <service
+            android:name=".BuddyMessageService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity
             android:name=".MessageActivity"
