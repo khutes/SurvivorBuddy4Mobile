@@ -79,9 +79,11 @@ public class RtspService extends Service implements ConnectCheckerRtsp{
         init_keep_alive();
         mServerCam = new RtspServerCamera2(this, true, this, portNum);
 
+
         if(!mServerCam.isStreaming()) {
             if(mServerCam.isRecording() || (mServerCam.prepareAudio() && mServerCam.prepareVideo())) {
                 mServerCam.startStream();
+                mServerCam.switchCamera();
             }
         }
         return START_STICKY;
