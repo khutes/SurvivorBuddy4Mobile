@@ -15,6 +15,9 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 
     buildTypes {
         release {
@@ -38,4 +41,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:1.9.3'
     implementation project(':rtspserver')
+    testCompile 'org.mockito:mockito-core:+'
 }

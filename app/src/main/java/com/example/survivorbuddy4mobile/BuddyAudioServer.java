@@ -2,6 +2,8 @@ package com.example.survivorbuddy4mobile;
 
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -80,6 +82,7 @@ public class BuddyAudioServer {
 
         while(continueReading) {
 
+            /*
             int readReturn = 0;
             byte[] incomingBytes = new byte[chunkSize];
             try {
@@ -96,8 +99,34 @@ public class BuddyAudioServer {
 
             writePipe.write(incomingBytes);
             writePipe.flush();
+            */
 
+            if(!receiveData()) {
+                break;
+            }
         }
+    }
+
+    public boolean receiveData() throws IOException {
+        int readReturn = 0;
+        byte[] incomingBytes = new byte[chunkSize];
+        try {
+            readReturn = dataFromClientStream.read(incomingBytes);
+        } catch(SocketException e) {
+            dataFromClientStream.close();
+            return false;
+        }
+
+        if(readReturn == -1) {
+            dataFromClientStream.close();
+            return false;
+        }
+
+        writePipe.write(incomingBytes);
+        writePipe.flush();
+
+        return true;
+
     }
 
 
@@ -123,6 +152,18 @@ public class BuddyAudioServer {
         }).start();
     }
 
+    //Setter function to aid in test development
+    public void setDataFromClientStream(DataInputStream d) {
+        this.dataFromClientStream = d;
+    }
+
+    public void setWritePipe(PipedOutputStream p) {
+        this.writePipe = p;
+    }
+
+    public void setChunkSize(int c) {
+        this.chunkSize = c;
+    }
 
 
 

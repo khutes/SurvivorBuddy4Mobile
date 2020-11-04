@@ -117,84 +117,54 @@ public class BuddyMessageServer {
 
     private void receiveDataLoop() throws IOException {
 
-        String input_line;
         while(recvConnectionGood) {
-
-            byte[] bs = new byte[2048];
-            int readReturn = dataFromClientStream.read(bs);
-
-            if(readReturn == -1) {
-                Log.i(TAG, "BREAK PIPE");
-                dataFromClientStream.close();
+            if(!receiveData()) {
                 break;
             }
-            Log.i(TAG, "HERE3");
-            if(pipedStreamConnected) {
-                toServicePipe.write(bs);
-                toServicePipe.flush();
-            }
-
-
-
-            input_line = new String(bs, StandardCharsets.UTF_8).trim();
-
-            Log.i(TAG, "message_content: <" + input_line + ">");
-
-            if(input_line.equals(disconnectMsg)) {
-
-                break; }
         }
         toServicePipe.close();
     }
 
+    public boolean receiveData() throws IOException {
 
+        String input_line;
+        byte[] bs = new byte[2048];
+        int readReturn = dataFromClientStream.read(bs);
 
-
-
-    /*
-    private void startServer() {
-
-        Log.i(TAG, "startServer");
-        Log.i(TAG, Utils.getIPAddress(true));
-
-        try {
-            do {
-                //connection setup
-                serverSocket = new ServerSocket(portNum);
-                clientSocket = serverSocket.accept();
-                connectionGood = true;
-                fromClient = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
-
-                String inputLine = "";
-                while (connectionGood) {
-                    byte[] bs = new byte[2048];
-
-                    int len_msg = fromClient.read(bs);
-                    //checks for unexpected disconnect
-                    if (len_msg == -1) {
-                        connectionGood = false;
-                        continue;
-                    }
-
-                    inputLine = new String(bs, StandardCharsets.UTF_8).trim();
-
-                    if (inputLine.equals(disconnectMessage)) {
-                        connectionGood = false;
-                        continue;
-                    }
-
-                    Log.i(TAG, "read return value: " + len_msg);
-                    Log.i(TAG, "message_content: <" + inputLine + ">");
-
-                    messageActivity.setMessageTextViewContent(inputLine);
-
-                }
-                Log.i(TAG, "server loop done");
-                serverSocket.close();
-            } while(restartServer);
-        } catch(IOException e) {
-            Log.e(TAG, "EXCEPTION", e );
+        if(readReturn == -1) {
+            Log.i(TAG, "BREAK PIPE");
+            dataFromClientStream.close();
+            return false;
         }
+        Log.i(TAG, "HERE3");
+        if(pipedStreamConnected) {
+            toServicePipe.write(bs);
+            toServicePipe.flush();
+        }
+
+
+
+        input_line = new String(bs, StandardCharsets.UTF_8).trim();
+
+        Log.i(TAG, "message_content: <" + input_line + ">");
+
+        if(input_line.equals(disconnectMsg)) { return false; }
+
+        return true;
+
     }
-     */
+
+    //Setter function to aid in test development
+    public void setDataFromClientStream(DataInputStream d) {
+        this.dataFromClientStream = d;
+    }
+
+    public void setWritePipe(PipedOutputStream p) {
+        this.toServicePipe = p;
+    }
+
+    public void setPipedStreamConnected(boolean b) {
+        this.pipedStreamConnected = b;
+    }
+
 }
