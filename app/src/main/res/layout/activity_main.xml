@@ -10,10 +10,11 @@
         android:id="@+id/rtsp_service_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:onClick="startStopRtsp"
         android:text="@string/start_stream_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rtsp_url" />
 
@@ -32,10 +33,11 @@
         android:id="@+id/start_message_activity_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="36dp"
         android:onClick="startMessageActivity"
         android:text="@string/message_activity_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rtsp_service_button" />
 
@@ -43,10 +45,23 @@
         android:id="@+id/audio_activity_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="36dp"
         android:onClick="startAudioActivity"
         android:text="@string/audio_activity_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/start_message_activity_button" />
+
+    <Button
+        android:id="@+id/settings_button"
+        android:layout_width="202dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="36dp"
+        android:onClick="startSettingsActivity"
+        android:text="@string/settings_button_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/audio_activity_button" />
 </androidx.constraintlayout.widget.ConstraintLayout>

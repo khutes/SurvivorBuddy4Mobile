@@ -7,7 +7,35 @@
     <string name="message_activity_button">Show Messages</string>
     <string name="audio_activity_button">Audio Server Controls</string>
     <string name="message_textview_default"></string>
-    <string name="message_server_client_disconnect_message">_(CLIENT MESSAGE)client_disconnecting</string>
+    <string name="message_server_client_disconnect_message">_(CLIENT_MESSAGE)client_disconnecting</string>
     <string name="start_audio_service_button">Start Audio Server</string>
     <string name="stop_audio_service_button">Stop Audio Server</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="settings_button_label">Settings</string>
+
+    <string name="rtsp_port_label_text">Phone to PC AV Port</string>
+    <string name="audio_port_label_text">PC to Phone Audio Port</string>
+    <string name="message_port_label_text">PC to Phone Message Port</string>
+    <string name="apply_setting_button_label">Apply</string>
+
+    <string name="default_rtsp_port">1935</string>
+    <string name="default_audio_port">8080</string>
+    <string name="default_message_port">5050</string>
+
+    <string name="ip_addr_default_text">IP Address: None</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>

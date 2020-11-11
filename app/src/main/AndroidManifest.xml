@@ -18,14 +18,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light"
         android:usesCleartextTraffic="true">
+        <activity android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity"
+            ></activity>
+
         <service
             android:name=".BuddyAudioService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".BuddyAudioActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
 
         <service
             android:name=".BuddyMessageService"
