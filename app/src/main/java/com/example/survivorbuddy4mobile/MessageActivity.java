@@ -1,6 +1,7 @@
 package com.example.survivorbuddy4mobile;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -20,6 +22,10 @@ public class MessageActivity extends AppCompatActivity {
     private String TAG = "[SB4] MessageActivity";
     public TextView messageDisplay;
     private BuddyMessageService mBuddyMessageService;
+
+    private int portNum;
+    private int defaultPort;
+    private SharedPreferences mPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,12 @@ public class MessageActivity extends AppCompatActivity {
     protected void onResume() {
         Log.i(TAG, "onResume");
         super.onResume();
+
+        defaultPort = Integer.parseInt(getString(R.string.default_message_port));
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        portNum = Integer.parseInt(String.valueOf(mPreferences.getInt("messagePort", defaultPort)));
+
+
         Intent intent = new Intent(MessageActivity.this, BuddyMessageService.class);
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
 
@@ -69,7 +81,7 @@ public class MessageActivity extends AppCompatActivity {
             Log.i(TAG, "BINDED");
             BuddyMessageService.LocalBinder mLocalBinder = (BuddyMessageService.LocalBinder)service;
             mBuddyMessageService = mLocalBinder.getBuddyMessageServiceInstance();
-            mBuddyMessageService.setupBuddyMessageService(5050, "_DISC");
+            mBuddyMessageService.setupBuddyMessageService(portNum, "_DISC");
         }
 
         @Override

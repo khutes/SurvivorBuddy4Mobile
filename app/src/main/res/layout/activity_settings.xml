@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity">
+
+    <EditText
+        android:id="@+id/rtsp_port_input"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="4dp"
+        android:ems="10"
+        android:hint="8080"
+        android:inputType="number"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ip_addr_text_view" />
+
+    <TextView
+        android:id="@+id/rtsp_port_label"
+        android:layout_width="220dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/rtsp_port_label_text"
+        android:textAlignment="textEnd"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/rtsp_port_input"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ip_addr_text_view" />
+
+    <TextView
+        android:id="@+id/audio_port_label"
+        android:layout_width="220dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/audio_port_label_text"
+        android:textAlignment="textEnd"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/audio_port_input"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rtsp_port_label" />
+
+    <EditText
+        android:id="@+id/audio_port_input"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="4dp"
+        android:ems="10"
+        android:hint="5050"
+        android:inputType="number"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rtsp_port_input" />
+
+    <EditText
+        android:id="@+id/message_port_input"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="4dp"
+        android:ems="10"
+        android:hint="5151"
+        android:inputType="number"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/audio_port_input" />
+
+    <TextView
+        android:id="@+id/message_port_label"
+        android:layout_width="220dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/message_port_label_text"
+        android:textAlignment="textEnd"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/message_port_input"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/audio_port_label" />
+
+    <TextView
+        android:id="@+id/ip_addr_text_view"
+        android:layout_width="181dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/ip_addr_default_text"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/apply_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="84dp"
+        android:onClick="applySettings"
+        android:text="@string/apply_setting_button_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/message_port_input" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

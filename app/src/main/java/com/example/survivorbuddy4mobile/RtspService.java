@@ -8,12 +8,14 @@ import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import com.pedro.rtspserver.RtspServerCamera1;
 import com.pedro.rtsp.utils.ConnectCheckerRtsp;
@@ -30,10 +32,13 @@ public class RtspService extends Service implements ConnectCheckerRtsp{
     private String TAG = "[SB4] RtspService";
     private NotificationManager mNotificationManager = null;
     private Context mContext = null;
-    private int portNum = 1935;
+    private int portNum;
+    private int defaultPort;
     private String channelID = "rstpServerChannel";
     private int notifyID = 123456;
     private String notifTitle = "Survivor Buddy";
+
+    private SharedPreferences mPreferences;
 
     private IBinder mBinder = new LocalBinder();
 
@@ -76,6 +81,12 @@ public class RtspService extends Service implements ConnectCheckerRtsp{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand");
+
+        defaultPort = Integer.parseInt(getString(R.string.default_rtsp_port));
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        portNum = Integer.parseInt(String.valueOf(mPreferences.getInt("rtspPort", defaultPort)));
+
+
         init_keep_alive();
         mServerCam = new RtspServerCamera2(this, true, this, portNum);
 

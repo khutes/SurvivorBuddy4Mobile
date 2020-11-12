@@ -12,20 +12,24 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/sb_logo_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/sb_logo_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light"
         android:usesCleartextTraffic="true">
+        <activity android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity"
+            ></activity>
+
         <service
             android:name=".BuddyAudioService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".BuddyAudioActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
 
         <service
             android:name=".BuddyMessageService"

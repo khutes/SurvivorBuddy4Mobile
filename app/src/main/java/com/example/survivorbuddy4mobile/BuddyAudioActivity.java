@@ -1,12 +1,14 @@
 package com.example.survivorbuddy4mobile;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -19,9 +21,13 @@ public class BuddyAudioActivity extends AppCompatActivity {
 
     private Button audioButton = null;
     private BuddyAudioService mBuddyAudioService;
-    private int portNum = 5050;
+    private int portNum;
+    private int defaultPort;
     private boolean boundBool = false;
     private volatile boolean startThreadsBool = false;
+
+    private SharedPreferences mPreferences;
+
 
 
     @Override
@@ -40,6 +46,11 @@ public class BuddyAudioActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        defaultPort = Integer.parseInt(getString(R.string.default_audio_port));
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        portNum = Integer.parseInt(String.valueOf(mPreferences.getInt("audioPort", defaultPort)));
+
         if(isServiceRunning(BuddyAudioService.class)){
             bindBAS();
         }
