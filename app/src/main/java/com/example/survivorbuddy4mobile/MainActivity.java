@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity{
     };
 
     private Button server_button = null;
-    private TextView url_textview = null;
+    //private TextView url_textview = null;
     private RtspService mServer = null;
     private Boolean boundedRtspService = false;
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity{
 
         //Get view contents
         server_button = (Button) findViewById(R.id.rtsp_service_button);
-        url_textview = (TextView) findViewById(R.id.rtsp_url);
+        //url_textview = (TextView) findViewById(R.id.rtsp_url);
 
         server_button.setText(R.string.start_stream_button);
         if(isServiceRunning(RtspService.class)) {
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity{
             safeRtspServiceUnbind();
             stopServiceThread();
             //stopService(new Intent(getApplicationContext(), RtspService.class));
-            url_textview.setText(R.string.default_textview_url);
+            //url_textview.setText(R.string.default_textview_url);
             server_button.setText(R.string.start_stream_button);
 
         } else {
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity{
             mServer = mLocalBinder.getRtspServiceInstance();
             boundedRtspService = true;
             //displays the stream endpoint url
-            url_textview.setText(mServer.get_endpoint());
+            //url_textview.setText(mServer.get_endpoint());
             Log.i(TAG, "END onServiceConnected");
         }
 
