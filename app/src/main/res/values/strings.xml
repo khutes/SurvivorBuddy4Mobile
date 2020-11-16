@@ -11,7 +11,7 @@
     <string name="start_audio_service_button">Start PC to Phone Audio</string>
     <string name="stop_audio_service_button">Stop PC to Phone Audio</string>
     <string name="title_activity_settings">SettingsActivity</string>
-    <string name="settings_button_label">App Settings</string>
+    <string name="settings_button_label">IP/Port Settings</string>
 
     <string name="rtsp_port_label_text">Phone to PC AV Port</string>
     <string name="audio_port_label_text">PC to Phone Audio Port</string>
