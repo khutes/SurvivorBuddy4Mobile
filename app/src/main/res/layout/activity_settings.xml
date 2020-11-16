@@ -106,7 +106,7 @@
         android:id="@+id/apply_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="48dp"
         android:onClick="applySettings"
         android:text="@string/apply_setting_button_label"
         app:layout_constraintEnd_toEndOf="parent"
