@@ -24,6 +24,9 @@ import com.pedro.rtspserver.RtspServerCamera2;
 
 import java.net.SocketException;
 
+/**
+ * A service which controls a RtspServer for sending Camera and Mic audio
+ */
 public class RtspService extends Service implements ConnectCheckerRtsp{
 
 
@@ -43,16 +46,24 @@ public class RtspService extends Service implements ConnectCheckerRtsp{
     private IBinder mBinder = new LocalBinder();
 
 
-
+    /**
+     * Default constructor
+     */
     public RtspService() {
     }
 
+    /**
+     * Default onCreate
+     */
     @Override
     public void onCreate() {
         Log.i(TAG, "onCreate");
         super.onCreate();
     }
 
+    /**
+     * Used notifications to prevent systems from killing service on its own
+     */
     private void keepAliveTrick() {
         Log.i(TAG, "keepAliveTrick");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -70,14 +81,26 @@ public class RtspService extends Service implements ConnectCheckerRtsp{
     }
 
 
-
+    /**
+     * Called on bind. Returns a LocalBinder
+     * @param intent Intent
+     * @return LocalBinder
+     */
     @Override
     public IBinder onBind(Intent intent) {
         Log.i(TAG, "onBind");
         // TODO: Return the communication channel to the service.
         return mBinder;
     }
-    
+
+    /**
+     * Called automatically on service start. Gets the port number from application settings.
+     * Instantiates and starts an RtspServerCamera2
+     * @param intent
+     * @param flags
+     * @param startId
+     * @return int START_STICKY, denotes that service should start itself if stopped by system
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand");
@@ -100,6 +123,10 @@ public class RtspService extends Service implements ConnectCheckerRtsp{
         return START_STICKY;
     }
 
+    /**
+     * Called on service stop
+     * Stops the RtspServerCamera2 if running and shows stop notification
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -111,6 +138,10 @@ public class RtspService extends Service implements ConnectCheckerRtsp{
         showNotification("Survivor Buddy Stream Stopped");
     }
 
+    //TODO: Refactor this function
+    /**
+     * Inits the notification manager used by keepAliveTrick and calls keepAliveTrick
+     */
     private void init_keep_alive() {
         Log.i(TAG, "init_keep_alive");
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -122,12 +153,20 @@ public class RtspService extends Service implements ConnectCheckerRtsp{
         Log.i(TAG, "END_init_keep_alive");
     }
 
+    /**
+     * Gets the endpoint url of RtpsServerCamera2
+     * @return String, The endpoint url
+     */
     public String get_endpoint() {
         Log.i(TAG, "get_endpoint");
         return mServerCam.getEndPointConnection();
     }
 
 
+    /**
+     * Displays temportary notification to screen
+     * @param text String, the content of the notification
+     */
     private void showNotification(String text) {
         Log.i(TAG, "showNotification");
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this, channelID)
@@ -143,43 +182,70 @@ public class RtspService extends Service implements ConnectCheckerRtsp{
     }
 
 
+    /**
+     * Shows notification when client connects to RtpsServerCamera2
+     */
     @Override
     public void onConnectionSuccessRtsp() {
         Log.i(TAG, "onConnectionSuccessRtsp");
         showNotification("Client Connected");
     }
 
+    /**
+     * Show notification id server connection fails
+     * @param reason
+     */
     @Override
     public void onConnectionFailedRtsp(String reason) {
         Log.i(TAG, "onConnectionFailedRtsp");
         showNotification("Connection Failed");
     }
 
+    /**
+     * NOT USED
+     * @param bitrate
+     */
     @Override
     public void onNewBitrateRtsp(long bitrate) {
         Log.i(TAG, "onNewBitrateRtsp");
         //bitrate changes will not be supported
     }
 
+    /**
+     * Shows notification when client disconnects from rtsp server
+     */
     @Override
     public void onDisconnectRtsp() {
         Log.i(TAG, "onDisconnectRtsp");
         showNotification("Disconnected");
     }
 
+    /**
+     * Show notification upon authentication error
+     */
     @Override
     public void onAuthErrorRtsp() {
         Log.i(TAG, "onAuthErrorRtsp");
         showNotification("Authorization Error");
     }
 
+    /**
+     * Shows notification up authentication success
+     */
     @Override
     public void onAuthSuccessRtsp() {
         Log.i(TAG, "onAuthSuccessRtsp");
         showNotification("Authorization Success");
     }
 
+    /**
+     * Simple LocalBinder
+     */
     public class LocalBinder extends Binder {
+        /**
+         * Returns the current instance of the service
+         * @return RtspService, this instance
+         */
         public RtspService getRtspServiceInstance() {
             Log.i(TAG, "getRtspServiceInstance");
             return RtspService.this;

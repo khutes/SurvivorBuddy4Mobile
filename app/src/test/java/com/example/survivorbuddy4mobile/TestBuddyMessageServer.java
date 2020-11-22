@@ -17,6 +17,9 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Set of unit tests for BuddyMessageServer
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class TestBuddyMessageServer {
 
@@ -25,13 +28,13 @@ public class TestBuddyMessageServer {
     private boolean defaultRestartBool = true;
 
 
-
+    /**
+     * Tests that receiveData() returns true upon successful receipt of data and that write for
+     * the toServicePipe is called with the correct argument
+     * @throws IOException
+     */
     @Test
     public void receiveData_good_receipt_pipe_connected() throws IOException {
-        /*
-        Tests that receiveData() returns true upon successful receipt of data and that
-        write for the toServicePipe is called with the correct argument
-         */
 
         BuddyMessageServer bms = new BuddyMessageServer(defaultPort, defaultDiscMsg, defaultRestartBool);
 
@@ -62,12 +65,13 @@ public class TestBuddyMessageServer {
 
     }
 
+    /**
+     * Tests that receiveData() returns true upon successful receipt of data and that write for the
+     * toServicePipe is not called
+     * @throws IOException
+     */
     @Test
     public void receiveData_good_receipt_pipe_not_connected() throws IOException {
-        /*
-        Tests that receiveData() returns true upon successful receipt of data and that
-        write for the toServicePipe is not called
-         */
 
         BuddyMessageServer bms = new BuddyMessageServer(defaultPort, defaultDiscMsg, defaultRestartBool);
 
@@ -90,13 +94,12 @@ public class TestBuddyMessageServer {
 
     }
 
-
+    /**
+     * Tests that receiveData handles when reading from a closed input stream. Should output false
+     * @throws IOException
+     */
     @Test
     public void receiveData_eof() throws IOException {
-        /*
-        Tests that receiveData handles when reading from a closed input stream. Should output
-        false
-         */
 
         //setup
         BuddyMessageServer bms = new BuddyMessageServer(defaultPort, defaultDiscMsg, defaultRestartBool);

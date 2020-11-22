@@ -23,6 +23,10 @@ import android.widget.Toast;
 
 import java.security.Permission;
 
+/**
+ * The main screen of the application. All other activities are started here. RtspService is
+ * directly controlled here
+ */
 public class MainActivity extends AppCompatActivity{
 
     private String[] PERMISSIONS = {
@@ -38,6 +42,12 @@ public class MainActivity extends AppCompatActivity{
 
     private String TAG = "[SB4] MainActivity";
 
+    /**
+     * Called onCreate
+     * Sets the button text for Start/Stop Video Phone to PC button
+     * Also check and asks for necessary permissions
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +70,10 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    /**
+     * Called onStart
+     * If rtspService is running it binds to it
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -70,6 +84,10 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    /**
+     * Called onStop
+     * Unbinds from rtspService
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -77,6 +95,9 @@ public class MainActivity extends AppCompatActivity{
         safeRtspServiceUnbind();
     }
 
+    /**
+     * Default onDestroy
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -84,6 +105,10 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
+    /**
+     * Starts and stops RtspService, changes button text based on option
+     * @param view View
+     */
     public void startStopRtsp(View view) {
         //check if RtspServer is runnning
         Log.i(TAG, "startStopRtsp");
@@ -102,6 +127,11 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    /**
+     * Checks if a service is running
+     * @param serviceClass Class, the service to be checked
+     * @return boolean, true if service is running, false otherwise
+     */
     private boolean isServiceRunning(Class<?> serviceClass) {
 
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -113,6 +143,10 @@ public class MainActivity extends AppCompatActivity{
         return false;
     }
 
+    /**
+     * Checks if application has necessary permissions
+     * @return boolean, true if all permissions are granted, false otherwise
+     */
     private boolean hasPermissions() {
         for(String permission : PERMISSIONS) {
             if(ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -122,7 +156,13 @@ public class MainActivity extends AppCompatActivity{
         return true;
     }
 
+
     private ServiceConnection mRtspServiceConnection = new ServiceConnection() {
+        /**
+         * Called after bind to RtspService, used to pass parameters to service
+         * @param name
+         * @param service
+         */
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.i(TAG, "onServiceConnected");
@@ -136,6 +176,11 @@ public class MainActivity extends AppCompatActivity{
         }
 
         //Should never be called
+
+        /**
+         * Called when RtspService unexpectedly fails
+         * @param name
+         */
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.i(TAG, "onServiceDisconnected");
@@ -143,6 +188,9 @@ public class MainActivity extends AppCompatActivity{
         }
     };
 
+    /**
+     * Binds to RtspService not yet bound
+     */
     private void safeRtspServiceBind() {
         Log.i(TAG, "safeRtspServiceBind");
         /*
@@ -159,6 +207,9 @@ public class MainActivity extends AppCompatActivity{
         else { Log.i(TAG, "safeRtspServiceBind: service NOT running"); }
     }
 
+    /**
+     * Unbinds from RtspService is service is running and bound
+     */
     private void safeRtspServiceUnbind() {
         Log.i(TAG, "safeRtspServiceUnbind");
         if(isServiceRunning(RtspService.class)) {
@@ -170,46 +221,43 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    /**
+     * Starts the rtspService unbound
+     */
     private void startServiceThread() {
-
         startService(new Intent(getApplicationContext(), RtspService.class));
-        /*
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                startService(new Intent(getApplicationContext(), RtspService.class));
-            }
-        }).start();
-        */
     }
 
+    /**
+     * Stops RtspService unbound
+     */
     private void stopServiceThread() {
-
         stopService(new Intent(getApplicationContext(), RtspService.class));
-        /*
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                stopService(new Intent(getApplicationContext(), RtspService.class));
-            }
-        }).start();
-        */
     }
 
 
-    //--------------------------------------------------------------------
-    //Message activity functions on main
-
+    /**
+     * Starts MessageActivity
+     * @param view View
+     */
     public void startMessageActivity(View view) {
         Log.i(TAG, "startMessageActivity");
         startActivity(new Intent(this, MessageActivity.class));
     }
 
+    /**
+     * Starts BuddyAudioActivity
+     * @param view View
+     */
     public void startAudioActivity(View view) {
         Log.i(TAG, "startBuddyAudioActivity");
         startActivity(new Intent(this, BuddyAudioActivity.class));
     }
 
+    /**
+     * Starts SettingsActivity
+     * @param view View
+     */
     public void startSettingsActivity(View view) {
         Log.i(TAG, "startSettingsActivity");
         startActivity(new Intent(this, SettingsActivity.class));

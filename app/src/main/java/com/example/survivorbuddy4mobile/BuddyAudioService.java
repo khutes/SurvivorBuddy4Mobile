@@ -21,6 +21,12 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * BuddyAudioService controls BuddyAudioServer and runs in the background continually until
+ * explicitly stopped in BuddyAudioActvity
+ * @author Kyle Hutto
+ * @version 1.0
+ */
 public class BuddyAudioService extends Service {
 
     private String TAG = "[SB4] BuddyAudioService";
@@ -42,12 +48,27 @@ public class BuddyAudioService extends Service {
     private boolean audioPlaying;
     private int audioBufferSize;
 
+    /**
+     * Unused init function
+     */
     public BuddyAudioService() {
     }
 
+    /**
+     * Called automatically when binded to
+     * @param intent an Intent
+     * @return LocalBinder
+     */
     @Override
     public IBinder onBind(Intent intent) { return mBinder; }
 
+    /**
+     * Called automatically when service is started, starts the keep alive notifications
+     * @param intent an Intent
+     * @param flags int default arg
+     * @param startId int default arg
+     * @return Retuns START_STICKY so service is auto restarted if stopped by system
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -59,6 +80,9 @@ public class BuddyAudioService extends Service {
         return START_STICKY;
     }
 
+    /**
+     * Starts BuddyAudioServer in a thread and calls playAudioStream() in another
+     */
     public void runServiceThreads() {
         Log.i(TAG, "runServiceThreads");
         mBuddyAudioServer = new BuddyAudioServer(portNum);
@@ -101,6 +125,9 @@ public class BuddyAudioService extends Service {
         Log.i(TAG, "END all threads");
     }
 
+    /**
+     * Starts a thread which calls runServiceThreads()
+     */
     public void autoRunThreads() {
         new Thread(new Runnable() {
             @Override
@@ -114,6 +141,12 @@ public class BuddyAudioService extends Service {
 
     }
 
+    /**
+     * Reads data from a PipedInputStream which is connected to BuddyAudioServer and plays that
+     * raw byte data through the android speakers. Plays audio in MONO format. Continues until
+     * service is stopped.
+     * @throws IOException
+     */
     private void playAudioStream() throws IOException {
         audioBufferSize = 1024;
         audioChannelConfiguration = AudioFormat.CHANNEL_OUT_MONO;
@@ -161,7 +194,10 @@ public class BuddyAudioService extends Service {
     }
 
 
-
+    /**
+     * Automatically called when service is stopped. Stops all threads on service and stops
+     * stops BuddyAudioServer
+     */
     @Override
     public void onDestroy() {
         Log.i(TAG, "onDestroy");
@@ -174,10 +210,17 @@ public class BuddyAudioService extends Service {
         showNotification("Survior Buddy Audio Server Stopped");
     }
 
+    /**
+     * Wrapper function to help pass the port number from the activity to the service
+     * @param portNum int, the port number which will be used by BuddyAudioServer
+     */
     public void setupBuddyAudioService(int portNum) {
         this.portNum = portNum;
     }
 
+    /**
+     * Creates/inits a NotificationManager
+     */
     private void setupNotificationManager() {
 
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -191,6 +234,9 @@ public class BuddyAudioService extends Service {
         }
     }
 
+    /**
+     * Uses notifications to prevent the system from killing the service on it own
+     */
     private void keepAliveTrick() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification notification = new NotificationCompat.Builder(this, channelID)
@@ -204,6 +250,10 @@ public class BuddyAudioService extends Service {
         }
     }
 
+    /**
+     * Displays temporary notification on screen
+     * @param text String, the message which will show on the notification
+     */
     private void showNotification(String text) {
         Log.i(TAG, "showNotification");
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this, channelID)
@@ -219,7 +269,14 @@ public class BuddyAudioService extends Service {
     }
 
 
+    /**
+     * A simple LocalBinder
+     */
     public class LocalBinder extends Binder {
+        /**
+         * Returns this instance of BuddyAudioService
+         * @return BuddyAudioService, this instance
+         */
         public BuddyAudioService getBuddyAudioServiceInstance() {
             return BuddyAudioService.this;
         }

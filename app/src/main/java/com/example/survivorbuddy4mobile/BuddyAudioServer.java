@@ -14,6 +14,10 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 
+/** A TCP server which receives data from client and writes it to a PipedOutputStream
+ * @author Kyle Hutto
+ * @version 1.0
+ */
 public class BuddyAudioServer {
 
     private String TAG = "[SB4] BuddyAudioServer";
@@ -32,8 +36,10 @@ public class BuddyAudioServer {
     public volatile boolean stopCalled;
 
 
-
-
+    /**
+     * Constructor for BuddyAudioServer
+     * @param portNum is the port number used by the ServerSocket
+     */
     public BuddyAudioServer(int portNum) {
         this.portNum = portNum;
         this.writePipe = new PipedOutputStream();
@@ -41,11 +47,19 @@ public class BuddyAudioServer {
         this.stopCalled = false;
     }
 
+    /**
+     * Wrapper to provides a PipedOutputStream which is paired to the writePipe
+     * @return PipedInputStream paired to a PipedOutputStream to which incoming data of the server is written
+     */
     public PipedInputStream getPipe() {
         return this.readPipe;
     }
 
 
+    /**
+     * Starts the server, receives the chunk size from client which denotes the size of all other packets
+     * @throws IOException
+     */
     public void startServer() throws IOException {
         stopCalled = false;
         Log.i(TAG, "startServer");
@@ -78,35 +92,25 @@ public class BuddyAudioServer {
         serverReceiveSocket.close();
     }
 
+    /**
+     * Starts the reception of bytes in a loop, stops when receive data returns false or server
+     * encounters an error/is stopped
+     * @throws IOException
+     */
     public void receiveDataLoop() throws IOException {
 
         while(continueReading) {
-
-            /*
-            int readReturn = 0;
-            byte[] incomingBytes = new byte[chunkSize];
-            try {
-                readReturn = dataFromClientStream.read(incomingBytes);
-            } catch(SocketException e) {
-                dataFromClientStream.close();
-                break;
-            }
-
-            if(readReturn == -1) {
-                dataFromClientStream.close();
-                break;
-            }
-
-            writePipe.write(incomingBytes);
-            writePipe.flush();
-            */
-
             if(!receiveData()) {
                 break;
             }
         }
     }
 
+    /**
+     * Reads number of bites which was specified by client. Writes those bytes to a PipedOutputStream
+     * @return boolean, true if read on socket was successful, false otherwise
+     * @throws IOException
+     */
     public boolean receiveData() throws IOException {
         int readReturn = 0;
         byte[] incomingBytes = new byte[chunkSize];
@@ -130,6 +134,9 @@ public class BuddyAudioServer {
     }
 
 
+    /**
+     * Stops the server. Does not notify client. Client is expected to handle disconnection
+     */
     public void stopServer() {
 
         continueReading = false;
@@ -153,14 +160,27 @@ public class BuddyAudioServer {
     }
 
     //Setter function to aid in test development
+
+    /**
+     * Helper function for unit testing
+     * @param d
+     */
     public void setDataFromClientStream(DataInputStream d) {
         this.dataFromClientStream = d;
     }
 
+    /**
+     * Helper function for unit testing
+     * @param p
+     */
     public void setWritePipe(PipedOutputStream p) {
         this.writePipe = p;
     }
 
+    /**
+     * Helper function for unit testing
+     * @param c
+     */
     public void setChunkSize(int c) {
         this.chunkSize = c;
     }

@@ -5,6 +5,9 @@ import java.net.*;
 import java.util.*;
 //import org.apache.http.conn.util.InetAddressUtils;
 
+/**
+ * Externally found set of utilities. Primarily used to find IP of device.
+ */
 public class Utils {
 
     /**

@@ -11,6 +11,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Activity used to change the port settings for BuddyMessageServer, BuddyAudioServer, and RtspServer
+ * Also displays the current IP address of the device
+ */
 public class SettingsActivity extends AppCompatActivity {
 
     String TAG = "[SB4] SettingsActivity";
@@ -26,6 +30,11 @@ public class SettingsActivity extends AppCompatActivity {
     int defaultAudioPort;
     int defaultMessagePort;
 
+    /**
+     * Called onCreate
+     * Gets the various GUI elements from the layout
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +50,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Called onResume
+     * Updates the displayed IP address
+     * Updates the port boxes with current port settings
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -65,6 +79,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Validates if an entered port number is valid
+     * @param portNum int, the port number to be validated
+     * @return boolean, true if port is valid, false otherwise
+     */
     private boolean validatePortNum(int portNum) {
         Log.i(TAG, "validatingPort");
         if(portNum >= 1 && portNum <= 65535) {
@@ -74,6 +93,10 @@ public class SettingsActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Writes all the port settings currently displayed to SharedPreferences and checks for validity
+     * @param view View
+     */
     public void applySettings(View view) {
         Log.i(TAG, "applySettings");
         mEditor = mPreferences.edit();

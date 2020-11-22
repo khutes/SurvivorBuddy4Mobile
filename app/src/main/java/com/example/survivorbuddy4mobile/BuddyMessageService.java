@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * A service controlled by MessageActivity. Handled the start/stop of BuddyMessageServer.
+ * Relays content received by BuddyMessageServer to MessageActivity.
+ */
 public class BuddyMessageService extends Service{
 
     private String TAG = "[SB4] BuddyMessageService";
@@ -23,15 +27,29 @@ public class BuddyMessageService extends Service{
     public static final String BROADCAST_ACTION = "com.example.survivorbuddy4mobile.service";
 
 
+    /**
+     * Default constructor. Not used
+     */
     public BuddyMessageService() {
 
     }
 
+    /**
+     * Automatically called when binded to.
+     * @param intent
+     * @return LocalBinder for easy passing of parameters
+     */
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
 
+    /**
+     * Automatically called when unbinded from
+     * Stops the BuddyMessageServer
+     * @param intent
+     * @return LocalBinder
+     */
     @Override
     public boolean onUnbind(Intent intent) {
         super.onUnbind(intent);
@@ -50,6 +68,11 @@ public class BuddyMessageService extends Service{
 
     }
 
+    /**
+     * Starts a BuddyMessageServer in its own thread
+     * @param port int, the port number that the BuddyMessageServer will be started with
+     * @param disconnectMsg String, currently unused
+     */
     public void setupBuddyMessageService(int port, String disconnectMsg) {
         this.portNum = port;
         this.disconnectMsg = disconnectMsg;
@@ -64,6 +87,9 @@ public class BuddyMessageService extends Service{
         }).start();
     }
 
+    /**
+     * Starts a BuddyMessageServer and getDisplayMessage in their own threads
+     */
     private void serviceRunLoop() {
 
         while(restartServerBool) {
@@ -104,6 +130,10 @@ public class BuddyMessageService extends Service{
         }
     }
 
+    /**
+     * Reads bytes from a PipedInputStream connected to a BuddyMessageServer and sends them to
+     * MessageActivity as a broadcast. Continues until pipe is closed
+     */
     private void getDisplayMessage() {
 
         String displayText;
@@ -131,6 +161,10 @@ public class BuddyMessageService extends Service{
         }
     }
 
+    /**
+     * Broadcasts the content of a string
+     * @param text String, the content of the broadcast
+     */
     private void sendDisplayText(String text) {
         Intent intent = new Intent(BROADCAST_ACTION);
         intent.putExtra("displayText", text);
@@ -138,9 +172,14 @@ public class BuddyMessageService extends Service{
     }
 
 
-
-
+    /**
+     * A simple LocalBinder
+     */
     public class LocalBinder extends Binder {
+        /**
+         * Returns this instance of BuddyMessageService. Used for easy parameter passing
+         * @return BuddyMessageService, this instance of it
+         */
         public BuddyMessageService getBuddyMessageServiceInstance() {
             return BuddyMessageService.this;
         }

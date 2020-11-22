@@ -22,7 +22,9 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 import static org.mockito.Mockito.*;
-
+/**
+ * Set of unit tests for BuddyAudioServer
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class TestBuddyAudioServer {
 
@@ -31,12 +33,12 @@ public class TestBuddyAudioServer {
     private int defaultChunkSize = 1024;
 
 
+    /**
+     * Tests that receiveData returns True when successful and write the byte data to writePipe
+     * @throws IOException
+     */
     @Test
     public void receiveData_good_receive() throws IOException {
-        /*
-        Tests that receiveData returns True when successful and write the
-        byte data to writePipe
-         */
 
         //setup
         BuddyAudioServer bas = new BuddyAudioServer(this.defaultPortNum);
@@ -60,12 +62,12 @@ public class TestBuddyAudioServer {
         verify(mockPipe, times(1)).write(testByteData);
     }
 
+    /**
+     * Tests that receiveData handles when reading from a closed input stream. Should output false
+     * @throws IOException
+     */
     @Test
     public void receiveData_eof() throws IOException {
-        /*
-        Tests that receiveData handles when reading from a closed input stream. Should output
-        false
-         */
 
         //setup
         BuddyAudioServer bas = new BuddyAudioServer(this.defaultPortNum);

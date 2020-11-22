@@ -16,6 +16,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * A TCP server which receives packets of text encoded as UTF-8 and writes it to an PipedOutputStream
+ */
 public class BuddyMessageServer {
 
     private String TAG = "[SB4] BuddyMessageServer";
@@ -37,6 +40,13 @@ public class BuddyMessageServer {
     private PipedOutputStream toServicePipe;
 
 
+    /**
+     * Contructor for BuddyMessageServer
+     * @param port_num int, the port number used by the ServerSocket
+     * @param dc_message String, the message which is sent to client upon server shutdown or that
+     *                   client sends to shutdown the server
+     * @param restart_bool Boolean, true if server should be restarted upon shutdown. NOT IMPLEMENTED
+     */
     public BuddyMessageServer(int port_num, String dc_message, Boolean restart_bool) {
         this.portNum = port_num;
         this.disconnectMsg = dc_message;
@@ -46,6 +56,10 @@ public class BuddyMessageServer {
         this.recvConnectionGood = true;
     }
 
+    /**
+     * Stops the server, send client disconnect message
+     * @throws IOException
+     */
     public void shutdownServer() throws IOException {
 
         recvConnectionGood = false;
@@ -82,6 +96,10 @@ public class BuddyMessageServer {
 
     }
 
+    /**
+     * Provides pipedInputStream which is connected to the server's PipedOutputStream
+     * @return PipedInputStream
+     */
     public PipedInputStream getPipedStream() {
         PipedInputStream mp = null;
         try {
@@ -93,6 +111,10 @@ public class BuddyMessageServer {
         return mp;
     }
 
+    /**
+     * Starts the server
+     * @throws IOException
+     */
     public void startServer() throws IOException{
 
         serverReceiveSocket = new ServerSocket(this.portNum);
@@ -115,6 +137,10 @@ public class BuddyMessageServer {
 
     }
 
+    /**
+     * Loops receiveData() until shutdown/error
+     * @throws IOException
+     */
     private void receiveDataLoop() throws IOException {
 
         while(recvConnectionGood) {
@@ -125,6 +151,11 @@ public class BuddyMessageServer {
         toServicePipe.close();
     }
 
+    /**
+     * Receives data from client and writes it to PipedOutputStream
+     * @return boolean, true is read was successful, false otherwise
+     * @throws IOException
+     */
     public boolean receiveData() throws IOException {
 
         String input_line;
@@ -155,14 +186,27 @@ public class BuddyMessageServer {
     }
 
     //Setter function to aid in test development
+
+    /**
+     * Helper function for unit tests
+     * @param d
+     */
     public void setDataFromClientStream(DataInputStream d) {
         this.dataFromClientStream = d;
     }
 
+    /**
+     * Helper function for unit tests
+     * @param p
+     */
     public void setWritePipe(PipedOutputStream p) {
         this.toServicePipe = p;
     }
 
+    /**
+     * Helper function for unit tests
+     * @param b
+     */
     public void setPipedStreamConnected(boolean b) {
         this.pipedStreamConnected = b;
     }

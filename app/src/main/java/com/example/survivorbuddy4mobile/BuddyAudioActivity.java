@@ -15,6 +15,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+/** The control screen for incoming audio server of SurvivorBuddy
+ * @author Kyle Hutto
+ * @version 1.0
+ * @since 11/21/20
+ */
 public class BuddyAudioActivity extends AppCompatActivity {
 
     private String TAG = "[SB4] BuddyAudioActivity";
@@ -29,7 +34,10 @@ public class BuddyAudioActivity extends AppCompatActivity {
     private SharedPreferences mPreferences;
 
 
-
+    /**
+     * Creates the activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +51,9 @@ public class BuddyAudioActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Runs when activity is resumed
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -56,12 +67,19 @@ public class BuddyAudioActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Runs when activity is paused
+     */
     @Override
     public void onPause() {
         super.onPause();
         unbindBAS();
     }
 
+    /**
+     * Toggle function which bind/unbinds and starts/stops BuddyAudioService
+     * @param view
+     */
     public void startStopBAService(View view) {
         Log.i(TAG, "startStopBAService");
 
@@ -81,6 +99,9 @@ public class BuddyAudioActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Binds to BuddyAudioService
+     */
     private void bindBAS() {
         if(!boundBool) {
             bindService(new Intent(BuddyAudioActivity.this, BuddyAudioService.class),
@@ -88,6 +109,9 @@ public class BuddyAudioActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Unbinds from BuddyAudioService
+     */
     private void unbindBAS() {
 
         if(boundBool) {
@@ -98,7 +122,11 @@ public class BuddyAudioActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Checks if service is running
+     * @param serviceClass
+     * @return boolean, true if service is running, false otherwise
+     */
     private boolean isServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for(ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -109,7 +137,13 @@ public class BuddyAudioActivity extends AppCompatActivity {
         return false;
     }
 
+
     ServiceConnection mServiceConnection = new ServiceConnection() {
+        /**
+         * Runs after BuddyAudioService is bound, calls function to start BuddyAudioServer
+         * @param name
+         * @param service
+         */
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             BuddyAudioService.LocalBinder mLocalBinder = (BuddyAudioService.LocalBinder)service;
@@ -122,6 +156,10 @@ public class BuddyAudioActivity extends AppCompatActivity {
             boundBool = true;
         }
 
+        /**
+         * Runs if BuddyAudioService fails unexpectedly
+         * @param name
+         */
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.i(TAG, "ERROR: onServiceDisconnected");
